@@ -119,6 +119,43 @@ or what do we have in our cache line?
 
 --
 
+
 ## cache behavior
 1. what will happen if we want to read a data item?
 2. what will happen if we want to write a data item?
+
+note: the plain scenario could be very simple. But in case of multicore processing.
+
+
+---
+
+## MESI protocol
+
+* cache line state as a node {.fragment}
+* message as an edge {.fragment}
+* action as an update {.fragment}
+* Cache behavior as a temporal graph {.fragment}
+
+--
+
+## temporal graph
+
+![static-graph](./static/temporal_graph.png)
+
+--
+
+## MESI protocol
+
+#### Cache line state:
+* modified {.fragment}
+* exclusive {.fragment}
+* shared {.fragment}
+* invalid {.fragment}
+
+note: difference between modified and exclusive is whether you need to writeback, also whether can be shared without sending message
+
+
+--
+
+## MESI protocol
+
