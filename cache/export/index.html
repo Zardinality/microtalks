@@ -1,0 +1,859 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+
+  <title>Reveal JS presentation</title>
+
+  <meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+  <meta name="author" content="Hakim El Hattab">
+
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="libs/reveal.js/4.3.1/reset.css">
+  <link rel="stylesheet" href="libs/reveal.js/4.3.1/reveal.css">
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
+  <!-- highlight Theme -->
+  
+  <link rel="stylesheet" href="libs/highlight.js/11.3.1/styles/monokai.min.css">
+  
+	
+		
+	<link rel="stylesheet" href="libs/reveal.js/4.3.1/plugin/chalkboard/style.css">
+	
+	
+	
+  <link rel="stylesheet" href="libs/reveal.js/4.3.1/plugin/customcontrols/style.css">
+  
+	
+
+
+
+  <!-- Revealjs Theme -->
+  
+  <link rel="stylesheet" href="libs/reveal.js/4.3.1/theme/white.css" id="theme">
+  
+  
+
+  <link rel="stylesheet" href="libs/styles/tasklist.css">
+	<link rel="stylesheet" href="libs/styles/iota.css">
+	<link rel="stylesheet" href="libs/styles/layout.css">
+
+
+  <!-- Revealjs Theme -->
+  
+
+   <!-- css list -->
+	
+
+   
+
+</head>
+
+<body>
+
+   
+
+  <div class="reveal">
+
+    <!-- Any section element inside of this container is displayed as a slide -->
+    <div class="slides">
+
+      
+
+
+    
+        <section >
+            
+            <h1>Cache Coherency</h1>
+<p>Gongze Cao, 2022/09/29</p>
+
+            </section>
+    
+
+
+
+    
+        <section data-auto-animate>
+            
+            <!-- .slide: data-auto-animate -->
+<h2>Outline</h2>
+<ul>
+<li>Cache structure</li>
+<li>Cache coherence
+<ul>
+<li>MESI protocol
+<ul>
+<li>MESI state and message</li>
+<li>Cache contention</li>
+<li>Memory Barrier</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            </section>
+    
+
+
+
+    
+        <section data-auto-animate>
+            
+            <!-- .slide: data-auto-animate -->
+<h2>Outline</h2>
+<ul>
+<li>Cache structure</li>
+<li>Cache coherence
+<ul>
+<li>MESI protocol
+<ul>
+<li>MESI state and message</li>
+<li>Cache contention</li>
+</ul>
+</li>
+<li>Memory Barrier
+<ul>
+<li>Store buffer
+<ul>
+<li>Store forwarding</li>
+</ul>
+</li>
+<li>Invalidation queue</li>
+<li>Examples</li>
+<li>Memory Barrier for specific processors</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            </section>
+    
+
+
+
+    
+    <section>
+        <section >
+            <h2>Latency numbers that every programmer should know</h2>
+<ul>
+<li>How many instructions a cpu core can execute in one nano?</li>
+<li>How many nano a cpu need to fetch a data item from L1 cache, what about L2/3 cache? Memory?</li>
+</ul>
+<!-- pretty much like you are doing homework, but you have to fetch and hand in the homework from and to the office. Of course you will put some homework to the desk next by -->
+
+            </section>
+        
+            <section >
+                <h2>cacheline</h2>
+<ul>
+<li>what is a data item?</li>
+<li>why dont we have cache item?</li>
+<li>why dont we have scattered cache item?</li>
+<li>data locality and cost determines that we have to fetch in cacheline?</li>
+</ul>
+<aside class="notes"> ram bus is 64 bytes, so a request has to be 64 bytes to be economic</aside>
+
+            </section>
+        
+            <section >
+                <h2>cache structure</h2>
+<ul>
+<li>Basically a fixed sized HashMap(from what to what?)</li>
+</ul>
+<!-- address to cache line, but not precisely, as we will see -->
+
+            </section>
+        
+            <section >
+                <h2>cache structure</h2>
+<p><img src="./static/cache-structure.png" alt=""></p>
+<ul>
+<li>16 sets, <em>set</em> is the number of buckets.</li>
+<li>2 ways, <em>way</em> is the size of buckets.</li>
+</ul>
+<!-- for a hash map we need to determine, what is the hash function, what is the equal function -->
+<ul>
+<li>hash function being the last but <strong>eight</strong> bits of address, the equal function is the rest of the address(except the last four bits).</li>
+</ul>
+
+            </section>
+        
+            <section data-auto-animate>
+                <h2>cache structure</h2>
+<!-- .slide: data-auto-animate -->
+<p><img src="./static/cache-structure.png" alt=""></p>
+<p><code>0x12345E00</code></p>
+
+            </section>
+        
+            <section data-auto-animate>
+                <h2>cache structure</h2>
+<!-- .slide: data-auto-animate -->
+<p><img src="./static/cache-structure.png" alt=""></p>
+<p class="col" style="height:50%; width:100%;float: middle;"><code>0x12345E00</code></p>
+<div class="col container" style="height:50%; width:100%;float: middle;">
+<div class="left">
+<p><code>0x12345</code></p>
+<p>tag</p>
+</div>
+<div class="middle">
+<p><code>E</code></p>
+<p><em>hash</em> index</p>
+</div>
+<div class="right">
+<p><code>00</code></p>
+<p>offset</p>
+</div>
+</div>
+
+            </section>
+        
+            <section >
+                <h2>cache structure</h2>
+<ul>
+<li>Why do we choose the hash function like this? (<em>Hint: locality again</em>)</li>
+</ul>
+
+            </section>
+        
+            <section >
+                <h2>cache structure</h2>
+<ul>
+<li>what are we talking about when we talk about cache line length?
+or what do we have in our cache line?</li>
+</ul>
+
+            </section>
+        
+            <section >
+                <h2>cache behavior</h2>
+<ol>
+<li>what will happen if we want to read a data item?</li>
+<li>what will happen if we want to write a data item?</li>
+</ol>
+<aside class="notes"> the plain scenario could be very simple. But in case of multicore processing.</aside>
+
+            </section>
+        
+            <section >
+                <h2>cache behavior</h2>
+<h3>SMP scenario requirement</h3>
+<ol>
+<li class="fragment">Consistency: only one core has newest value</li>
+<li class="fragment">Visibility: No core has outdated value</li>
+</ol>
+<p class="fragment">Behaves as a whole</p>
+
+            </section>
+        
+
+    </section>
+    
+
+
+
+    
+    <section>
+        <section >
+            <h2>MESI protocol</h2>
+<ul>
+<li class="fragment">cache line state as a node</li>
+<li class="fragment">message as an edge</li>
+<li class="fragment">action as an update</li>
+<li class="fragment">Cache behavior as a temporal graph</li>
+</ul>
+
+            </section>
+        
+            <section >
+                <h2>temporal graph</h2>
+<p><img src="./static/temporal_graph.png" alt="static-graph"></p>
+
+            </section>
+        
+            <section >
+                <h2>MESI protocol</h2>
+<h4>Cache line state:</h4>
+<ul>
+<li class="fragment">modified</li>
+<li class="fragment">exclusive</li>
+<li class="fragment">shared</li>
+<li class="fragment">invalid</li>
+</ul>
+<aside class="notes"> difference between modified and exclusive is whether you need to writeback, also whether can be shared without sending message</aside>
+
+            </section>
+        
+            <section >
+                <h2>MESI protocol</h2>
+<h4>Cache line message:</h4>
+<ul>
+<li class="fragment">read &amp; read-response</li>
+<li class="fragment">invalidate &amp; invalidate-acknowledge</li>
+<li class="fragment">Read Invalidate</li>
+<li class="fragment">Writeback</li>
+</ul>
+<aside class="notes"> 1. read&amp;response are a pair,
+2. read invalidate is actually a combination(it wants to grab some cache and declare it to be exclusive).
+3. Writeback is a way to invalidate some cache and make rooms.
+quiz: 1. what happen when 2 cpus tries to invalidate the same cache atm?
+2. invalidate storm
+2. why bother SMP</aside>
+
+            </section>
+        
+            <section >
+                <h2>MESI protocol</h2>
+<h4>MESI state diagram</h4>
+<p><img src="./static/state-diagram.png" alt="temporal_graph"></p>
+<p><a href="https://www.scss.tcd.ie/Jeremy.Jones/VivioJS/caches/MESIHelp.htm">demo</a></p>
+
+            </section>
+        
+            <section >
+                <h2>MESI protocol</h2>
+<h3>Other possible states:</h3>
+<ul>
+<li class="fragment">Owner</li>
+</ul>
+
+            </section>
+        
+            <section >
+                <h2>MESI protocol</h2>
+<h4>cache contention, aka false sharing, also aka cache pingpong</h4>
+<p><img src="./static/unnecessary_stalls.png" alt="stalls"></p>
+
+            </section>
+        
+            <section >
+                <h2>MESI protocol</h2>
+<h4>cache contention, aka false sharing, also aka cache pingpong</h4>
+<ul>
+<li>imagine a thread create an object that takes in a cacheline</li>
+<li>then pass it to other threads to amend</li>
+<li class="fragment">invalidation costs because of messaging</li>
+<li class="fragment">we need to avoid it</li>
+</ul>
+<p class="fragment"><strong>Q:</strong> Do we have suspicious false sharing in our system? What about market data?</p>
+
+            </section>
+        
+            <section >
+                <h2>MESI protocol</h2>
+<h4>cache contention, aka false sharing, also aka cache pingpong</h4>
+<p><strong>Remedy(?)</strong>:</p>
+<pre><code class="language-c++">struct keep_apart {
+  alignas(std::hardware_destructive_interference_size) std::atomic&lt;int&gt; cat;
+  alignas(std::hardware_destructive_interference_size) std::atomic&lt;int&gt; dog;
+};
+</code></pre>
+<p>Make sure the shared cache-line is either read-only, or owned by a certain thread.</p>
+
+            </section>
+        
+
+    </section>
+    
+
+
+
+    
+    <section>
+        <section >
+            <h2>Memory Barrier</h2>
+<h3>Store buffer</h3>
+<p class="col" style="height:50%; width:100%;float: middle;"><img src="./static/unnecessary_stalls.png" alt="stalls">
+<img src="./static/compress_w-r.png" alt="r-w"></p>
+<p>Why do we bother wait for acknowledge?</p>
+<aside class="notes"> invalidation costs too much as we’ve seen. but we already know the result! we know every single state we need to continue processing next instructions. So all we need to do is continue, and when the acknowledge comes back, overwrite it.</aside>
+
+            </section>
+        
+            <section >
+                <h3>Store buffer</h3>
+<p><img src="./static/store-buffer.png" alt="stalls"></p>
+<aside class="notes"> we need a place to store all the invalidation requests. a FIFO queue as abstraction sounds valid. You can imagine the queue being a spmc queue, the real write happens when the request is popped out the queue.</aside>
+
+            </section>
+        
+            <section >
+                <h3>Store buffer</h3>
+<h4>example 1</h4>
+<p><img src="./static/store-buffer-eg.png" alt="stalls" :height="700px" width="50%"></p>
+<div class="container">
+<div class="left">
+<p>Core 0</p>
+<p>a=0</p>
+</div>
+<div class="right">
+<p>Core 1</p>
+<p>b=0</p>
+</div>
+</div>
+<aside class="notes"> imagine a and b are on core 0 and core 1, and the following code in ran on core 1. At first core 0 and core 1 has a and b respectively in their cache both exclusive. What will happen when core 1 wants to execute the code?</aside>
+
+            </section>
+        
+            <section >
+                <h3>Store buffer</h3>
+<h4>Store forwarding</h4>
+<p>Store buffer is more than a FIFO queue, it is also a map allows being snooped.</p>
+<p class="fragment">Question: why don’t we just write the write request to cache?</p>
+<aside class="notes"> ofc this is because 1. we might not have that cacheline in our cache. 2. there might be other data in the cacheline</aside>
+
+            </section>
+        
+            <section >
+                <h3>Store buffer</h3>
+<h4>example 1</h4>
+<p><img src="./static/store-buffer-eg-2.png" alt="stalls-eg-2" :height="700px" width="50%"></p>
+<div class="container">
+<div class="left">
+<p>Core 0</p>
+<p>b=0 | E</p>
+<p><code>foo()</code></p>
+</div>
+<div class="right">
+<p>Core 1</p>
+<p>a=0 | E</p>
+<p><code>bar()</code></p>
+</div>
+</div>
+<aside class="notes"> why core 0 will issue a “read invalidate” rather than simply just an invalidate</aside>
+
+            </section>
+        
+            <section >
+                <h3>Read memory barrier</h3>
+<p><img src="./static/rmb-eg.png" alt="rmb-eg1"></p>
+<p>While we do not have instruction to flush cache, we can flush store buffer.</p>
+<aside class="notes"> why we call it a memory barrier? it is actually a memory <em>request</em> barrier, or to say filter. This barrier will not let those requests in the store buffer pass it. Q: what else effect will the memory barrier has?(cpu prefetch and prediction)</aside>
+
+            </section>
+        
+
+    </section>
+    
+
+
+
+    
+    <section>
+        <section >
+            <h3>Invalidate queue</h3>
+<ul>
+<li>In practice the store buffer is filled up easily, so we need constantly wait.</li>
+<li>What can we do to shorten the wait time?</li>
+</ul>
+<aside class="notes"> we all know there are two ways to overcome the peak problem in producer consumer problem, that is increase the queue size, or reduce the latency. There we choose to reduce the latency; because the latency is comprised by two parts, one is the communication cost, one is invalidate cost, and the former is sorta fixed. We choose to make the invalidate operation, again non-blocking.</aside>
+
+            </section>
+        
+            <section >
+                <h3>Invalidate queue</h3>
+<p><img src="./static/invalidation-queue.png" alt="inv-queue"></p>
+
+            </section>
+        
+            <section >
+                <h3>Invalidate queue</h3>
+<h4>example 2</h4>
+<p><img src="./static/invalidation-queue-eg-1.png" alt="inv-eg-1"></p>
+<div class="container">
+<div class="left">
+<p>Core 0</p>
+<p>a=0 | S</p>
+<p>b=0 | E</p>
+<p><code>foo()</code></p>
+</div>
+<div class="right">
+<p>Core 1</p>
+<p>a=0 | S</p>
+<p><code>bar()</code></p>
+</div>
+</div>
+<aside class="notes"> we might step into bar after foo is done. when a is stuck in invalidation queue, there might be misorder Q: why core 0 will issue a “invalidate” rather than again an “read invalidate”</aside>
+
+            </section>
+        
+            <section >
+                <h3>Invalidation queue</h3>
+<h4>Remedy</h4>
+<p><img src="./static/invalidation-queue-eg-2.png" alt="inv-eg-1"></p>
+<aside class="notes">now this assert will not always be triggered in all possible paths</aside>
+
+            </section>
+        
+            <section >
+                <h3>Invalidation queue</h3>
+<h3>Memory Barrier</h3>
+<p><img src="./static/memory-barrier.png" alt="memory-barrier"></p>
+<p class="fragment"><strong>Takeaways:</strong></p>
+<ul>
+<li class="fragment"><code>smp_rmb</code>: flush invalidation queue</li>
+<li class="fragment"><code>smp_wmb</code>: flush store buffer</li>
+<li class="fragment"><code>smp_mb</code>: flush both</li>
+</ul>
+<p class="fragment">They are mapped to different implementation in different platforms.</p>
+<aside class="notes"> we either flush store buffer or flush memory barrier. They are different barriers. In gcc they are implemented using gcc intrinsic.</aside>
+
+            </section>
+        
+
+    </section>
+    
+
+
+
+    
+        <section >
+            
+            <h2>X86</h2>
+<p>Load Load</p>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <h2>X86 and Linux</h2>
+<p><code>/arch/x86/include/asm/barrier.h</code></p>
+<pre><code>#ifdef CONFIG_X86_32
+#define mb() asm volatile(ALTERNATIVE(&quot;lock; addl $0,-4(%%esp)&quot;, &quot;mfence&quot;, \
+				      X86_FEATURE_XMM2) ::: &quot;memory&quot;, &quot;cc&quot;)
+#define rmb() asm volatile(ALTERNATIVE(&quot;lock; addl $0,-4(%%esp)&quot;, &quot;lfence&quot;, \
+				       X86_FEATURE_XMM2) ::: &quot;memory&quot;, &quot;cc&quot;)
+#define wmb() asm volatile(ALTERNATIVE(&quot;lock; addl $0,-4(%%esp)&quot;, &quot;sfence&quot;, \
+				       X86_FEATURE_XMM2) ::: &quot;memory&quot;, &quot;cc&quot;)
+#else
+#define __mb()	asm volatile(&quot;mfence&quot;:::&quot;memory&quot;)
+#define __rmb()	asm volatile(&quot;lfence&quot;:::&quot;memory&quot;)
+#define __wmb()	asm volatile(&quot;sfence&quot; ::: &quot;memory&quot;)
+#endif
+</code></pre>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <h2>X86 and C++</h2>
+<p><img src="./static/memory-order-to-assembly.png" alt=""></p>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <h2>More topics to explore</h2>
+<ul>
+<li>MMU and TLB</li>
+<li>Directory based and snoop based cache synchronization</li>
+<li>Cache replacement strategy</li>
+</ul>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <h2>Takeaways:</h2>
+<ul>
+<li>Memory order are a representation and result of cache coherence</li>
+<li>The guarantee of memory order is from top to down: Code=&gt;Compiler=&gt;Circuits</li>
+</ul>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <p>Reference:
+[1]: <a href="https://coolshell.cn/articles/20793.html">https://coolshell.cn/articles/20793.html</a>
+[2]: <a href="https://www.bilibili.com/video/BV1e64y1T7J3/">https://www.bilibili.com/video/BV1e64y1T7J3/</a>
+[3]: <a href="https://www.bilibili.com/video/BV1fK4y1E7NC/">https://www.bilibili.com/video/BV1fK4y1E7NC/</a>
+[4]: <a href="https://inst.eecs.berkeley.edu/~cs61c/su18/">https://inst.eecs.berkeley.edu/~cs61c/su18/</a></p>
+
+            </section>
+    
+
+
+    </div>
+
+
+  </div>
+
+  <div class="line top"></div>
+  <div class="line bottom"></div>
+  <div class="line left"></div>
+  <div class="line right"></div>
+
+  <script src="libs/reveal.js/4.3.1/reveal.js"></script>
+<script src="libs/reveal.js/4.3.1/plugin/notes/notes.js"></script>
+<script src="libs/reveal.js/4.3.1/plugin/markdown/markdown.js"></script>
+<script src="libs/reveal.js/4.3.1/plugin/highlight/highlight.js"></script>
+<script src="libs/reveal.js/4.3.1/plugin/math/math.js"></script>
+<script src="libs/reveal.js/4.3.1/plugin/fullscreen/plugin.js"></script>
+<script src="libs/reveal.js/4.3.1/plugin/animate/plugin.js"></script>
+<script src="libs/reveal.js/4.3.1/plugin/animate/svg.min.js"></script>
+<script src="libs/reveal.js/4.3.1/plugin/anything/plugin.js"></script>
+<script src="libs/reveal.js/4.3.1/plugin/anything/Chart.min.js"></script>
+<script src="libs/reveal.js/4.3.1/plugin/anything/d3/d3.v3.min.js"></script>
+<script src="libs/reveal.js/4.3.1/plugin/anything/d3.patch.js"></script>
+<script src="libs/reveal.js/4.3.1/plugin/anything/d3/queue.v1.min.js"></script>
+<script src="libs/reveal.js/4.3.1/plugin/anything/d3/topojson.v1.min.js"></script>
+<script src="libs/reveal.js/4.3.1/plugin/anything/function-plot.js"></script>
+<script src="libs/reveal.js/4.3.1/plugin/customcontrols/plugin.js"></script>
+<script src="libs/reveal.js/4.3.1/plugin/embed-tweet/plugin.js"></script>
+<script src="libs/reveal.js/4.3.1/plugin/chart/chart.min.js"></script>
+<script src="libs/reveal.js/4.3.1/plugin/chart/plugin.js"></script>
+<script src="libs/reveal.js/4.3.1/plugin/verticator/verticator.js"></script>
+
+<script src="libs/reveal.js/4.3.1/plugin/zoom/zoom.js"></script>
+<script src="libs/reveal.js/4.3.1/plugin/search/search.js"></script>
+<script src="libs/reveal.js/4.3.1/plugin/menu/menu.js"></script>
+<script src="libs/reveal.js/4.3.1/plugin/chalkboard/plugin.js"></script>
+
+<!--	<script src="libs/reveal.js/4.3.1/plugin/audio-slideshow/plugin.js"></script>  -->
+<!--	<script src="libs/reveal.js/4.3.1/plugin/audio-slideshow/recorder.js"></script>-->
+<!--	<script src="libs/reveal.js/4.3.1/plugin/audio-slideshow/RecordRTC.js"></script>-->
+
+  
+
+<script>
+  const printPlugins = [
+      RevealNotes,
+      RevealHighlight,
+      RevealMath.MathJax3,
+      RevealAnimate,
+      RevealChalkboard, 
+			RevealEmbedTweet,
+			RevealChart,
+		];
+
+		const plugins =  [...printPlugins,
+		RevealZoom, 
+		RevealSearch, 
+				RevealMarkdown, 
+				RevealMenu, 
+				RevealFullscreen,
+				RevealAnything,
+				//RevealAudioSlideshow,
+				//RevealAudioRecorder,
+				RevealCustomControls, 
+				// poll
+				// question
+				// seminar
+				Verticator 
+				 ]
+
+
+		// Also available as an ES module, see:
+		// https://revealjs.com/initialization/
+		Reveal.initialize({
+			controls: true,
+      controlsTutorial: true,
+      controlsLayout: 'bottom-right',
+      controlsBackArrows: 'faded',
+      progress: true,
+      slideNumber: false,
+      //#showSlideNumber "all" "print" "speaker"
+      hash: true, //# hash: false,
+      //# respondToHashChanges: true,
+      //# history: false,
+      keyboard: true,
+      //#keyboardCondition: null,
+      overview: true,
+      center: true,
+      touch: true,
+      loop: false,
+      rtl: false,
+      //#navigationMode: 'default', linear grid
+      shuffle: false,
+      fragments: true,
+      fragmentInURL: false,
+      embedded: false,
+      help: true,
+      //#pause: true
+      showNotes: true,
+      autoPlayMedia: false, // TODO fix this to a nullable value
+      //#preloadIframes: null. true false
+      //#autoAnimate: true
+      //#autoAnimateMatcher: null,
+      //#autoAnimateEasing: 'ease',
+      //autoAnimateDuration: 1.0,
+      //#autoAnimateUnmatched: true
+      //#autoAnimateStyles: []
+      autoSlide: 0, // TODO fix this to a falseable value
+      autoSlideStoppable: true,
+      autoSlideMethod: '0',
+      defaultTiming: 120,
+      mouseWheel: false,
+      //#previewLinks: false
+      //#postMessage: true, // TODO : this can cause issues with the vscode api ???
+      //#postMessageEvents: false,
+      //#focusBodyOnPageVisibilityChange: true,
+      transition: 'slide',
+      transitionSpeed: 'default',
+      backgroundTransition: 'fade',
+      //#pdfMaxPagesPerSlide: Number.POSITIVE_INFINITY,
+      //#pdfSeparateFragments: true,
+      //#pdfPageHeightOffset: -1,
+      viewDistance: 3,
+      //#mobileViewDistance: 2,
+      display: 'block',
+      //#hideInactiveCursor: true,
+      //#hideCursorTime: 5000
+
+      // Parallax Background
+      parallaxBackgroundImage: '',
+      parallaxBackgroundSize: '',
+      parallaxBackgroundHorizontal: 0,
+      parallaxBackgroundVertical: 0,
+
+      //Presentation Size
+      width: 1000,
+			height: 1320,
+			margin: 0.04,
+      minScale: 0.2,
+      maxScale: 2,
+      disableLayout: false,
+
+      audio: {
+        prefix: 'audio/', // audio files are stored in the "audio" folder
+        suffix: '.ogg', // audio files have the ".ogg" ending
+        textToSpeechURL: null, // the URL to the text to speech converter
+        defaultNotes: false, // use slide notes as default for the text to speech converter
+        defaultText: false, // use slide text as default for the text to speech converter
+        advance: 0, // advance to next slide after given time in milliseconds after audio has played, use negative value to not advance
+        autoplay: false, // automatically start slideshow
+        defaultDuration: 5, // default duration in seconds if no audio is available
+        defaultAudios: true, // try to play audios with names such as audio/1.2.ogg
+        playerOpacity: 0.05, // opacity value of audio player if unfocused
+        playerStyle: 'position: fixed; bottom: 4px; left: 25%; width: 50%; height:75px; z-index: 33;', // style used for container of audio controls
+        startAtFragment: false, // when moving to a slide, start at the current fragment or at the start of the slide
+      },
+      
+      chalkboard: { // font-awesome.min.css must be available
+        //src: "chalkboard/chalkboard.json",
+        storage: "chalkboard-demo",
+      },
+      
+			customcontrols: {
+					controls: [
+      						{
+						  id: 'toggle-overview',
+						  title: 'Toggle overview (O)',
+						  icon: '<i class="fa fa-th"></i>',
+						  action: 'Reveal.toggleOverview();'
+						}
+						,
+      {
+        icon: '<i class="fa fa-pen-square"></i>',
+        title: 'Toggle chalkboard (B)',
+        action: 'RevealChalkboard.toggleChalkboard();'
+      },
+      {
+        icon: '<i class="fa fa-pen"></i>',
+        title: 'Toggle notes canvas (C)',
+        action: 'RevealChalkboard.toggleNotesCanvas();'
+      }
+      
+				]
+			},
+			chart: {
+					defaults: { 
+						color: 'lightgray', // color of labels
+						scale: { 
+							beginAtZero: true, 
+							ticks: { stepSize: 1 },
+							grid: { color: "lightgray" } , // color of grid lines
+						},
+					},
+					line: { borderColor: [ "rgba(20,220,220,.8)" , "rgba(220,120,120,.8)", "rgba(20,120,220,.8)" ], "borderDash": [ [5,10], [0,0] ] }, 
+					bar: { backgroundColor: [ "rgba(20,220,220,.8)" , "rgba(220,120,120,.8)", "rgba(20,120,220,.8)" ]}, 
+					pie: { backgroundColor: [ ["rgba(0,0,0,.8)" , "rgba(220,20,20,.8)", "rgba(20,220,20,.8)", "rgba(220,220,20,.8)", "rgba(20,20,220,.8)"] ]},
+					radar: { borderColor: [ "rgba(20,220,220,.8)" , "rgba(220,120,120,.8)", "rgba(20,120,220,.8)" ]}, 
+			},
+			math: {
+				mathjax: 'https://cdn.jsdelivr.net/gh/mathjax/mathjax@2.7.8/MathJax.js',
+				config: 'TeX-AMS_HTML-full',
+				// pass other options into `MathJax.Hub.Config()`
+				TeX: { Macros: { RR: "{\\bf R}" } }
+				},
+				anything: [ 
+				{
+		className: "plot",
+		defaults: {width:500, height: 500, grid:true},
+		initialize: (function(container, options){ options.target = "#"+container.id; functionPlot(options) })
+	 },
+	 {
+		className: "chart",  
+		initialize: (function(container, options){ container.chart = new Chart(container.getContext("2d"), options);  })
+	 },
+	 {
+		className: "anything",
+		initialize: (function(container, options){ if (options && options.initialize) { options.initialize(container)} })
+	 },
+					],
+			// Learn about plugins: https://revealjs.com/plugins/
+			plugins: (window.location.search.match(/print-pdf/gi) ? printPlugins : plugins ) 
+		});
+			
+
+
+	    // Change chalkboard theme : 
+		function changeTheme(input) {
+			var config = {};
+			config.theme = input.value;
+			Reveal.getPlugin("RevealChalkboard").configure(config);
+			input.blur();
+		}
+
+		// // Handle the message inside the webview
+        // window.addEventListener('message', event => {
+
+        //     const message = event.data; // The JSON data our extension sent
+
+        //     switch (message.command) {
+        //         case 'refactor':
+        //             Reveal.toggleHelp();
+        //     }
+        // });
+
+		if (window.location.search.match(/print-pdf-now/gi)) {
+      		setTimeout(() => {
+				window.print();
+			  }, 2500);
+			
+    }
+</script>
+
+</body>
+
+</html>
