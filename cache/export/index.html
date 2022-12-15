@@ -175,7 +175,7 @@
         
             <section >
                 <h2>cache structure</h2>
-<p><img src="./static/cache-structure.png" alt=""></p>
+<p><img src="static/cache-structure.png" alt=""></p>
 <ul>
 <li>16 sets, <em>set</em> is the number of buckets.</li>
 <li>2 ways, <em>way</em> is the size of buckets.</li>
@@ -190,7 +190,7 @@
             <section data-auto-animate>
                 <h2>cache structure</h2>
 <!-- .slide: data-auto-animate -->
-<p><img src="./static/cache-structure.png" alt=""></p>
+<p><img src="static/cache-structure.png" alt=""></p>
 <p><code>0x12345E00</code></p>
 
             </section>
@@ -198,7 +198,7 @@
             <section data-auto-animate>
                 <h2>cache structure</h2>
 <!-- .slide: data-auto-animate -->
-<p><img src="./static/cache-structure.png" alt=""></p>
+<p><img src="static/cache-structure.png" alt=""></p>
 <p class="col" style="height:50%; width:100%;float: middle;"><code>0x12345E00</code></p>
 <div class="col container" style="height:50%; width:100%;float: middle;">
 <div class="left">
@@ -276,7 +276,7 @@ or what do we have in our cache line?</li>
         
             <section >
                 <h2>temporal graph</h2>
-<p><img src="./static/temporal_graph.png" alt="static-graph"></p>
+<p><img src="static/temporal_graph.png" alt="static-graph"></p>
 
             </section>
         
@@ -314,7 +314,7 @@ quiz: 1. what happen when 2 cpus tries to invalidate the same cache atm?
             <section >
                 <h2>MESI protocol</h2>
 <h4>MESI state diagram</h4>
-<p><img src="./static/state-diagram.png" alt="temporal_graph"></p>
+<p><img src="static/state-diagram.png" alt="temporal_graph"></p>
 <p><a href="https://www.scss.tcd.ie/Jeremy.Jones/VivioJS/caches/MESIHelp.htm">demo</a></p>
 
             </section>
@@ -331,7 +331,7 @@ quiz: 1. what happen when 2 cpus tries to invalidate the same cache atm?
             <section >
                 <h2>MESI protocol</h2>
 <h4>cache contention, aka false sharing, also aka cache pingpong</h4>
-<p><img src="./static/unnecessary_stalls.png" alt="stalls"></p>
+<p><img src="static/unnecessary_stalls.png" alt="stalls"></p>
 
             </section>
         
@@ -372,8 +372,8 @@ quiz: 1. what happen when 2 cpus tries to invalidate the same cache atm?
         <section >
             <h2>Memory Barrier</h2>
 <h3>Store buffer</h3>
-<p class="col" style="height:50%; width:100%;float: middle;"><img src="./static/unnecessary_stalls.png" alt="stalls">
-<img src="./static/compress_w-r.png" alt="r-w"></p>
+<p class="col" style="height:50%; width:100%;float: middle;"><img src="static/unnecessary_stalls.png" alt="stalls">
+<img src="static/compress_w-r.png" alt="r-w"></p>
 <p>Why do we bother wait for acknowledge?</p>
 <aside class="notes"> invalidation costs too much as we’ve seen. but we already know the result! we know every single state we need to continue processing next instructions. So all we need to do is continue, and when the acknowledge comes back, overwrite it.</aside>
 
@@ -381,7 +381,7 @@ quiz: 1. what happen when 2 cpus tries to invalidate the same cache atm?
         
             <section >
                 <h3>Store buffer</h3>
-<p><img src="./static/store-buffer.png" alt="stalls"></p>
+<p><img src="static/store-buffer.png" alt="stalls"></p>
 <aside class="notes"> we need a place to store all the invalidation requests. a FIFO queue as abstraction sounds valid. You can imagine the queue being a spmc queue, the real write happens when the request is popped out the queue.</aside>
 
             </section>
@@ -389,7 +389,7 @@ quiz: 1. what happen when 2 cpus tries to invalidate the same cache atm?
             <section >
                 <h3>Store buffer</h3>
 <h4>example 1</h4>
-<p><img src="./static/store-buffer-eg.png" alt="stalls" :height="700px" width="50%"></p>
+<p><img src="static/store-buffer-eg.png" alt="stalls" :height="700px" width="50%"></p>
 <div class="container">
 <div class="left">
 <p>Core 0</p>
@@ -416,7 +416,7 @@ quiz: 1. what happen when 2 cpus tries to invalidate the same cache atm?
             <section >
                 <h3>Store buffer</h3>
 <h4>example 1</h4>
-<p><img src="./static/store-buffer-eg-2.png" alt="stalls-eg-2" :height="700px" width="50%"></p>
+<p><img src="static/store-buffer-eg-2.png" alt="stalls-eg-2" :height="700px" width="50%"></p>
 <div class="container">
 <div class="left">
 <p>Core 0</p>
@@ -435,7 +435,7 @@ quiz: 1. what happen when 2 cpus tries to invalidate the same cache atm?
         
             <section >
                 <h3>Read memory barrier</h3>
-<p><img src="./static/rmb-eg.png" alt="rmb-eg1"></p>
+<p><img src="static/rmb-eg.png" alt="rmb-eg1"></p>
 <p>While we do not have instruction to flush cache, we can flush store buffer.</p>
 <aside class="notes"> why we call it a memory barrier? it is actually a memory <em>request</em> barrier, or to say filter. This barrier will not let those requests in the store buffer pass it. Q: what else effect will the memory barrier has?(cpu prefetch and prediction)</aside>
 
@@ -461,14 +461,14 @@ quiz: 1. what happen when 2 cpus tries to invalidate the same cache atm?
         
             <section >
                 <h3>Invalidate queue</h3>
-<p><img src="./static/invalidation-queue.png" alt="inv-queue"></p>
+<p><img src="static/invalidation-queue.png" alt="inv-queue"></p>
 
             </section>
         
             <section >
                 <h3>Invalidate queue</h3>
 <h4>example 2</h4>
-<p><img src="./static/invalidation-queue-eg-1.png" alt="inv-eg-1"></p>
+<p><img src="static/invalidation-queue-eg-1.png" alt="inv-eg-1"></p>
 <div class="container">
 <div class="left">
 <p>Core 0</p>
@@ -489,7 +489,7 @@ quiz: 1. what happen when 2 cpus tries to invalidate the same cache atm?
             <section >
                 <h3>Invalidation queue</h3>
 <h4>Remedy</h4>
-<p><img src="./static/invalidation-queue-eg-2.png" alt="inv-eg-1"></p>
+<p><img src="static/invalidation-queue-eg-2.png" alt="inv-eg-1"></p>
 <aside class="notes">now this assert will not always be triggered in all possible paths</aside>
 
             </section>
@@ -497,7 +497,7 @@ quiz: 1. what happen when 2 cpus tries to invalidate the same cache atm?
             <section >
                 <h3>Invalidation queue</h3>
 <h3>Memory Barrier</h3>
-<p><img src="./static/memory-barrier.png" alt="memory-barrier"></p>
+<p><img src="static/memory-barrier.png" alt="memory-barrier"></p>
 <p class="fragment"><strong>Takeaways:</strong></p>
 <ul>
 <li class="fragment"><code>smp_rmb</code>: flush invalidation queue</li>
@@ -554,7 +554,7 @@ quiz: 1. what happen when 2 cpus tries to invalidate the same cache atm?
         <section >
             
             <h2>X86 and C++</h2>
-<p><img src="./static/memory-order-to-assembly.png" alt=""></p>
+<p><img src="static/memory-order-to-assembly.png" alt=""></p>
 
             </section>
     
