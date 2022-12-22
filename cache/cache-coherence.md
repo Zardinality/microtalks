@@ -47,32 +47,88 @@ Gongze Cao, 2022/09/29
 
 * How many instructions a cpu core can execute in one nano?
 * How many nano a cpu need to fetch a data item from L1 cache, what about L2/3 cache? Memory?
-<!-- pretty much like you are doing homework, but you have to fetch and hand in the homework from and to the office. Of course you will put some homework to the desk next by -->
+
+[click me](https://colin-scott.github.io/personal_website/research/interactive_latency.html)
+
+note:pretty much like you are doing homework, but you have to fetch and hand in the homework from and to the office. Of course you will put some homework to the desk next by
 --
 
-## cacheline
-* what is a data item?
+## Cache
+* transparent  {.fragment}
+* we want it to quickly store when it is not full  {.fragment}
+* we want it to quickly load when it has the answer  {.fragment}
+* just like a hash map  {.fragment}
+
+<!-- * what is a data item?
 * why dont we have cache item?
 * why dont we have scattered cache item?
 * data locality and cost determines that we have to fetch in cacheline?
 
-note: ram bus is 64 bytes, so a request has to be 64 bytes to be economic
+note: ram bus is 64 bytes, so a request has to be 64 bytes to be economic -->
 
 --
 
-## cache structure
-* Basically a fixed sized HashMap(from what to what?)
-<!-- address to cache line, but not precisely, as we will see -->
+## Cache structure
+
+```
+template<
+    class Key,
+    class T,
+    class Hash = std::hash<Key>,
+    class KeyEqual = std::equal_to<Key>,
+    class Allocator = std::allocator< std::pair<const Key, T> >
+> class unordered_map;
+```
+
+* What is `Key`?
+* the address obviously(why?)  {.fragment}
+* virtual address or real address? {.fragment}
+
+note:think about machine code
+<!-- note:address to cache line, but not precisely, as we will see -->
 
 --
 
-## cache structure
+## Cache structure
+```
+template<
+    class Key,
+    class T,
+    class Hash = std::hash<Key>,
+    class KeyEqual = std::equal_to<Key>,
+    class Allocator = std::allocator< std::pair<const Key, T> >
+> class unordered_map;
+```
+* What is `T`?
+* `T` is so called cache line. {.fragment}
+* Why do we have cache line? Instead of cache item? {.fragment}
+
+note: ram bus and locality
+
+--
+
+## Cache structure
+
+```
+template<
+    class Key,
+    class T,
+    class Hash = std::hash<Key>,
+    class KeyEqual = std::equal_to<Key>,
+    class Allocator = std::allocator< std::pair<const Key, T> >
+> class unordered_map;
+```
+* What is `Hash` and `KeyEqual`?
+
+--
+
+## Cache structure
 
 ![](./static/cache-structure.png)
-* 16 sets, *set* is the number of buckets.
-* 2 ways, *way* is the size of buckets.
-<!-- for a hash map we need to determine, what is the hash function, what is the equal function -->
-* hash function being the last but **eight** bits of address, the equal function is the rest of the address(except the last four bits).
+* 16 sets, *set* is the number of buckets. {.fragment}
+* 2 ways, *way* is the size of buckets. {.fragment}
+* hash function being the last but **eight** bits of address, the equal function is the rest of the address(except the last eight bits). {.fragment}
+
 
 --
 
@@ -114,6 +170,7 @@ offset
 
 ::: 
 
+
 --
 
 ## cache structure
@@ -122,18 +179,16 @@ offset
 
 --
 
-## cache structure
-
-* what are we talking about when we talk about cache line length?
-or what do we have in our cache line?
-
---
-
-
 ## cache behavior
 
 1. what will happen if we want to read a data item?
+* when it exists in cache
+* when it does not exist in cache
 2. what will happen if we want to write a data item?
+* when it exists in cache
+* when it does not exist in cache
+
+[cache structure](https://www.scss.tcd.ie/Jeremy.Jones/VivioJS/caches/cache.htm)
 
 note: the plain scenario could be very simple. But in case of multicore processing.
 
@@ -142,14 +197,14 @@ note: the plain scenario could be very simple. But in case of multicore processi
 ## cache behavior
 
 ### SMP scenario requirement
+
 1. Consistency: only one core has newest value {.fragment}
 2. Visibility: No core has outdated value {.fragment}
-
-Behaves as a whole {.fragment}
+3. Behaves as a whole {.fragment}
 
 ---
 
-## MESI protocol
+## Cache protocol
 
 * cache line state as a node {.fragment}
 * message as an edge {.fragment}
@@ -158,11 +213,25 @@ Behaves as a whole {.fragment}
 
 --
 
-## temporal graph
+## Temporal graph
 
 ![static-graph](./static/temporal_graph.png)
 
 --
+
+<!-- .slide: data-auto-animate -->
+
+## MSI protocol
+
+#### Cache line state:
+* modified {.fragment}
+* shared {.fragment}
+* invalid {.fragment}
+
+
+--
+
+<!-- .slide: data-auto-animate -->
 
 ## MESI protocol
 
@@ -189,8 +258,8 @@ note: difference between modified and exclusive is whether you need to writeback
 note: 1. read&response are a pair, 
 2. read invalidate is actually a combination(it wants to grab some cache and declare it to be exclusive). 
 3. Writeback is a way to invalidate some cache and make rooms.
-quiz: 1. what happen when 2 cpus tries to invalidate the same cache atm?
-2. invalidate storm
+quiz: 1. what happen when 2 cpus tries to invalidate the same cache atm? talk to jury
+2. invalidate storm yes and directory cache
 2. why bother SMP
 
 --
@@ -247,6 +316,8 @@ struct keep_apart {
 };
 ```
 Make sure the shared cache-line is either read-only, or owned by a certain thread.
+note: we used both
+
 ---
 
 ## Memory Barrier
