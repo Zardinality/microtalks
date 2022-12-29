@@ -48,7 +48,7 @@ Gongze Cao, 2022/09/29
 * How many instructions a cpu core can execute in one nano?
 * How many nano a cpu need to fetch a data item from L1 cache, what about L2/3 cache? Memory?
 
-[click me](https://colin-scott.github.io/personal_website/research/interactive_latency.html)
+[click me](./external/latency-numbers/latency-numbers.html)
 
 note:pretty much like you are doing homework, but you have to fetch and hand in the homework from and to the office. Of course you will put some homework to the desk next by
 --

@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<!-- saved from url=(0080)https://colin-scott.github.io/personal_website/research/interactive_latency.html -->
+<html class=" mhwmkr idc0_345"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style type="text/css" id="alertifyCSS">.alertify-logs>*{padding:12px 24px;color:#fff;box-shadow:0 2px 5px 0 rgba(0,0,0,.2);border-radius:1px}.alertify-logs>*,.alertify-logs>.default{background:rgba(0,0,0,.8)}.alertify-logs>.error{background:rgba(244,67,54,.8)}.alertify-logs>.success{background:rgba(76,175,80,.9)}.alertify{position:fixed;background-color:rgba(0,0,0,.3);left:0;right:0;top:0;bottom:0;width:100%;height:100%;z-index:1}.alertify.hide{opacity:0;pointer-events:none}.alertify,.alertify.show{box-sizing:border-box;transition:all .33s cubic-bezier(.25,.8,.25,1)}.alertify,.alertify *{box-sizing:border-box}.alertify .dialog{padding:12px}.alertify .alert,.alertify .dialog{width:100%;margin:0 auto;position:relative;top:50%;transform:translateY(-50%)}.alertify .alert>*,.alertify .dialog>*{width:400px;max-width:95%;margin:0 auto;text-align:center;padding:12px;background:#fff;box-shadow:0 2px 4px -1px rgba(0,0,0,.14),0 4px 5px 0 rgba(0,0,0,.098),0 1px 10px 0 rgba(0,0,0,.084)}.alertify .alert .msg,.alertify .dialog .msg{padding:12px;margin-bottom:12px;margin:0;text-align:left}.alertify .alert input:not(.form-control),.alertify .dialog input:not(.form-control){margin-bottom:15px;width:100%;font-size:100%;padding:12px}.alertify .alert input:not(.form-control):focus,.alertify .dialog input:not(.form-control):focus{outline-offset:-2px}.alertify .alert nav,.alertify .dialog nav{text-align:right}.alertify .alert nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button),.alertify .dialog nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button){background:transparent;box-sizing:border-box;color:rgba(0,0,0,.87);position:relative;outline:0;border:0;display:inline-block;-ms-flex-align:center;-ms-grid-row-align:center;align-items:center;padding:0 6px;margin:6px 8px;line-height:36px;min-height:36px;white-space:nowrap;min-width:88px;text-align:center;text-transform:uppercase;font-size:14px;text-decoration:none;cursor:pointer;border:1px solid transparent;border-radius:2px}.alertify .alert nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button):active,.alertify .alert nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button):hover,.alertify .dialog nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button):active,.alertify .dialog nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button):hover{background-color:rgba(0,0,0,.05)}.alertify .alert nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button):focus,.alertify .dialog nav button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button):focus{border:1px solid rgba(0,0,0,.1)}.alertify .alert nav button.btn,.alertify .dialog nav button.btn{margin:6px 4px}.alertify-logs{position:fixed;z-index:1}.alertify-logs.bottom,.alertify-logs:not(.top){bottom:16px}.alertify-logs.left,.alertify-logs:not(.right){left:16px}.alertify-logs.left>*,.alertify-logs:not(.right)>*{float:left;transform:translateZ(0);height:auto}.alertify-logs.left>.show,.alertify-logs:not(.right)>.show{left:0}.alertify-logs.left>*,.alertify-logs.left>.hide,.alertify-logs:not(.right)>*,.alertify-logs:not(.right)>.hide{left:-110%}.alertify-logs.right{right:16px}.alertify-logs.right>*{float:right;transform:translateZ(0)}.alertify-logs.right>.show{right:0;opacity:1}.alertify-logs.right>*,.alertify-logs.right>.hide{right:-110%;opacity:0}.alertify-logs.top{top:0}.alertify-logs>*{box-sizing:border-box;transition:all .4s cubic-bezier(.25,.8,.25,1);position:relative;clear:both;backface-visibility:hidden;perspective:1000;max-height:0;margin:0;padding:0;overflow:hidden;opacity:0;pointer-events:none}.alertify-logs>.show{margin-top:12px;opacity:1;max-height:1000px;padding:12px;pointer-events:auto}</style>
+    
+    <title>Numbers Every Programmer Should Know By Year</title>
+    <script src="./latency-numbers_files/codemirror.js.download"></script>
+    <script src="./latency-numbers_files/xml.js.download"></script>
+    <script src="./latency-numbers_files/javascript.js.download"></script>
+    <script src="./latency-numbers_files/css.js.download"></script>
+    <script src="./latency-numbers_files/htmlmixed.js.download"></script>
+    <link rel="stylesheet" href="./latency-numbers_files/codemirror.css">
+    <link href="./latency-numbers_files/bootstrap.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 10px;
+        padding-bottom: 10px;
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+    </style>
+    <link href="./latency-numbers_files/bootstrap-responsive.css" rel="stylesheet">
+    <style type="text/css">
+      .CodeMirror {
+        width: 99%;
+        border: 1px solid black;
+      }
+      iframe {
+        width: 99%;
+        height: 700px;
+      }
+    </style>
+  <style id="lc9l2m9u.qet">rt.katakana-terminator-rt::before { content: attr(data-rt); }</style></head>
+  <body data-new-gr-c-s-check-loaded="14.1091.0" data-gr-ext-installed="" data-new-gr-c-s-loaded="14.1091.0">
+    <a href="https://github.com/colin-scott/interactive_latencies"><img style="position: absolute; top: 0; right: 0; border: 0;" src="./latency-numbers_files/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+
+    <iframe id="preview" src="./latency-numbers_files/saved_resource.html"></iframe>
+    <textarea id="code" name="code" style="display: none;">&lt;!DOCTYPE html&gt;
+&lt;!-- ************************************** EDIT ME! ************************************** --&gt;
+&lt;!-- I interactively update myself. Made possible by: https://codemirror.net/ --&gt;
+&lt;html lang="en"&gt;
+  &lt;head&gt;
+    &lt;meta charset="utf-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;script src="//d3js.org/d3.v3.min.js"&gt;&lt;/script&gt;
+    &lt;link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css"&gt;
+    &lt;script src="//ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"&gt;&lt;/script&gt;
+    &lt;script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"&gt;&lt;/script&gt;
+
+    &lt;script&gt;
+    // Notes:
+    //   - All of Norvig's original numbers were from 2002
+    //   - Any numbers without a citation are from Norvig's article:
+    //       http://norvig.com/21-days.html#answers
+    //   - Exponential functions have the form:
+    //       y = a*b^x
+    //   - raising 2^2012 causes overflow, so we index year by (year - 1982)
+    //     (82 was the year the PC came out)
+    // TODO: get more accurate doubling rates from Aurojit Panda's
+    //       spreadsheet: http://www.eecs.berkeley.edu/~rcs/research/hw_trends.xlsx
+
+    var year = new Date().getFullYear();
+    function shift(year) {
+        return year - 1982;
+    }
+    function getPayloadBytes() {
+        // 1 MB
+        return Math.pow(10, 6);
+    }
+    function getNetworkPayloadBytes() {
+        // 2KB
+        return 2 * Math.pow(10,3);
+    }
+    function getCycle() {
+        // Clock speed stopped at ~3GHz in ~2005
+        // [source: http://www.kmeme.com/2010/09/clock-speed-wall.html]
+        // Before then, doubling every ~2 years
+        // [source: www.cs.berkeley.edu/~pattrsn/talks/sigmod98-keynote.ppt]
+        if (year &lt;= 2005) {
+          // 3*10^9 = a*b^(2005-1990)
+          // b = 2^(1/2)
+          // -&gt; a = 3*10^9 / 2^(2005.5)
+          var a = 3 * Math.pow(10, 9) / Math.pow(2,shift(2005) * 0.5);
+          var b = Math.pow(2, 1.0/2);
+          var hz = a * Math.pow(b, shift(year));
+        } else {
+          var hz = 3 * Math.pow(10,9);
+        }
+        //  1 / HZ = seconds
+        //  1*10^9 / HZ = ns
+        var ns = Math.pow(10,9) / hz;
+        return ns;
+    }
+    function getMemLatency() {
+        // Bus Latency is actually getting worse:
+        // [source: http://download.micron.com/pdf/presentations/events/winhec_klein.pdf]
+        // 15 years ago, it was decreasing 7% / year
+        // [source: www.cs.berkeley.edu/~pattrsn/talks/sigmod98-keynote.ppt]
+        if (year &lt;= 2000) {
+           // b = 0.93
+           // 100ns = a*0.93^2000
+           /// -&gt; a = 100 / 0.93^2000
+           var b = 0.93;
+           var a = 100.0 / Math.pow(0.93,shift(2000));
+           var ms = a * Math.pow(b, shift(year));
+        } else {
+           var ms = 100; // ns
+        }
+        return ms;
+    }
+    function getNICTransmissionDelay(payloadBytes) {
+        // NIC bandwidth doubles every 2 years
+        // [source: http://ampcamp.berkeley.edu/wp-content/uploads/2012/06/Ion-stoica-amp-camp-21012-warehouse-scale-computing-intro-final.pdf]
+        // TODO: should really be a step function
+        // 1Gb/s = 125MB/s = 125*10^6 B/s in 2003
+        // 125*10^6 = a*b^x
+        // b = 2^(1/2)
+        // -&gt; a = 125*10^6 / 2^(2003.5)
+        var a = 125 * Math.pow(10,6) / Math.pow(2,shift(2003) * 0.5);
+        var b = Math.pow(2, 1.0/2);
+        var bw = a * Math.pow(b, shift(year));
+        // B/s * s/ns = B/ns
+        var ns = payloadBytes / (bw / Math.pow(10,9));
+        return ns;
+    }
+    function getBusTransmissionDelay(payloadBytes) {
+        // DRAM bandwidth doubles every 3 years
+        // [source: http://ampcamp.berkeley.edu/wp-content/uploads/2012/06/Ion-stoica-amp-camp-21012-warehouse-scale-computing-intro-final.pdf]
+        // 1MB / 250,000 ns = 10^6B / 0.00025 = 4*10^9 B/s in 2001
+        // 4*10^9 = a*b^x
+        // b = 2^(1/3)
+        // -&gt; a = 4*10^9 / 2^(2001.33)
+        var a = 4*Math.pow(10, 9) / Math.pow(2,shift(2001) * 0.33);
+        var b = Math.pow(2,1.0/3);
+        var bw = a * Math.pow(b, shift(year));
+        // B/s * s/ns = B/ns
+        var ns = payloadBytes / (bw / Math.pow(10,9));
+        return ns;
+    }
+    function getSSDLatency() {
+        // Will flat-line in one capacity doubling cycle (18 months=1.5years)
+        // Before that, 20X decrease in 3 doubling cycles (54 months=4.5years)
+        // Source: figure 4 of http://cseweb.ucsd.edu/users/swanson/papers/FAST2012BleakFlash.pdf
+        // 20 us = 2*10^4 ns in 2012
+        // b = 1/20 ^ 1/4.5
+        // -&gt; a = 2*10^4 / 1/20 ^(2012 * 0.22)
+        if (year &lt;= 2014) {
+           var a = 2 * Math.pow(10,4) / Math.pow(1.0/20, shift(year) * 0.22);
+           var b = Math.pow(1.0/20, 1.0/4.5);
+           return a * Math.pow(b,shift(year));
+        } else {
+           return 16000;
+        }
+    }
+    function getSSDTransmissionDelay(payloadBytes) {
+        // SSD bandwidth doubles every 3 years
+        // [source: http://ampcamp.berkeley.edu/wp-content/uploads/2012/06/Ion-stoica-amp-camp-21012-warehouse-scale-computing-intro-final.pdf]
+        // 3GB/s = a*b^2012
+        // b = 2^(1/3)
+        // -&gt; a = 6*10^9 / 2^(2012.33)
+        var a = 3*Math.pow(10, 9) / Math.pow(2,shift(2012) * 0.33);
+        var b = Math.pow(2, 1.0/3);
+        var bw = a*Math.pow(b, shift(year));
+        // B/s * s/ns = B/ns
+        var ns = payloadBytes / (bw / Math.pow(10,9));
+        return ns;
+    }
+    function getSeek() {
+        // Seek + rotational delay halves every 10 years
+        // [source: http://www.storagenewsletter.com/news/disk/hdd-technology-trends-ibm]
+        // In 2000, seek + rotational =~ 10 ms
+        // b = (1/2)^(1/10)
+        // -&gt; a = 10^7 / (1/2)^(2000*0.1)
+        var a = Math.pow(10,7) / Math.pow(0.5,shift(2000)*0.1);
+        var b = Math.pow(0.5,0.1);
+        var ns = a * Math.pow(b, shift(year));
+        return ns;
+    }
+    function getDiskTransmissionDelay(payloadBytes) {
+        // Disk bandwidth is increasing very slowly -- doubles every ~5 years
+        // [source: http://ampcamp.berkeley.edu/wp-content/uploads/2012/06/Ion-stoica-amp-camp-21012-warehouse-scale-computing-intro-final.pdf]
+        // Before 2002 (~100MB/s):
+        // Disk bandwidth doubled every two years
+        // [source: www.cs.berkeley.edu/~pattrsn/talks/sigmod98-keynote.ppt]
+        if (year &lt;= 2002) {
+          // 100MB/s = a*b^2002
+          // b = 2^(1/2)
+          // -&gt; a = 10^8 / 2^(2002.5)
+          var a = Math.pow(10,8) / Math.pow(2,shift(2002) * 0.5);
+          var b = Math.pow(2,1.0/2);
+          var bw = a * Math.pow(b, shift(year));
+        } else {
+          // 100MB/s = a*b^2002
+          // b = 2^(1/5)
+          // -&gt; a = 10^8 / 2^(2002-1982 * .2)
+          var a = Math.pow(10,8) / Math.pow(2,shift(2002) * 0.2);
+          var b = Math.pow(2,1.0/5);
+          var bw = a * Math.pow(b, shift(year));
+        }
+        // B/s * s/ns = B/ns
+        var ns = payloadBytes / (bw / Math.pow(10,9));
+        return ns;
+    }
+    function getDCRTT() {
+        // Assume this doesn't change much?
+        return 500000; // ns
+    }
+    function getWanRTT() {
+        // Routes are arguably improving:
+        //   http://research.google.com/pubs/pub35590.html
+        // Speed of light is ultimately fundamental
+        return 150000000; // ns
+    }
+
+    // Display functions:
+    function drawBoxes(n, div, color) {
+        var cw = 100;
+        var ch = (n / 10) * 10;
+        if ((n % 10) != 0) {
+          ch += 10;
+        }
+        var rects = d3.select("#" + div).
+         append("svg:svg").
+         attr("width", cw).
+         attr("height", ch);
+
+        var length = 10;
+        var whitespace = 2;
+
+        for (var y = 0; y &lt; ch; y+=length) {
+            for (var x = 0; x &lt; cw; x+=length) {
+                if (n &gt; 0 &amp;&amp; n &lt; 1) {
+                  var width = n * length;
+                } else {
+                  var width = length;
+                }
+                rects.append("svg:rect").
+                  attr("x", x).
+                  attr("y", y).
+                  attr("height", length).
+                  attr("width", width).
+                  attr("style", color);
+
+                n -= 1;
+                if (n &lt;= 0) {
+                   return;
+                }
+            }
+        }
+    }
+
+    function singleBox(color) {
+        s = '&lt;svg width="11" height="11"&gt;';
+        s += '&lt;rect x="0" y="0" height="10" width="10" style="';
+        s += color + '"&gt;&lt;/rect&gt;';
+        s += '&lt;/svg&gt;';
+        return s;
+    }
+
+    var black = "stroke:#FFFFFF; fill: #000000";
+    var blue = "stroke:#FFFFFF; fill: #0000FF";
+    var green = "stroke:#FFFFFF; fill: #00CC00";
+    var red = "stroke:#FFFFFF; fill: #FF0000";
+
+    function addCommas(nStr) {
+      // First, make fixed length
+      // TODO: bad separation of concerns
+      if (nStr &lt; 1) {
+          nStr = nStr.toFixed(1);
+      } else {
+          nStr = nStr.toFixed(0);
+      }
+      nStr += '';
+      x = nStr.split('.');
+      x1 = x[0];
+      x2 = x.length &gt; 1 ? '.' + x[1] : '';
+      var rgx = /(\d+)(\d{3})/;
+      while (rgx.test(x1)) {
+        x1 = x1.replace(rgx, '$1' + ',' + '$2');
+      }
+      return x1 + x2;
+    }
+
+    function Metric(ns, boxType, displayString, div, optionalSuffix) {
+        this.ns = ns;
+        if (boxType == "ns") {
+          this.color = black;
+          this.boxes = ns;
+          this.nsDisplay = addCommas(ns);
+          this.alternateUnit = "";
+        } else if (boxType == "100ns") {
+          this.color = blue;
+          this.boxes = ns / 100;
+          var us = ns / 1000;
+          if (us &gt;= 1) {
+            this.nsDisplay = addCommas(Math.round(ns / 1000) * 1000);
+            this.alternateUnit = " ≈ " + addCommas(ns / 1000) + "μs";
+          } else {
+            this.nsDisplay = addCommas(ns);
+            this.alternateUnit = "";
+          }
+        } else if (boxType == "10us") {
+          this.color = green;
+          this.boxes = ns / 10000;
+          if (displayString != "") {
+            var us = ns / 1000;
+            if (us &gt;= 1) {
+              this.nsDisplay = addCommas(Math.round(ns / 1000) * 1000);
+              this.alternateUnit = " ≈ " + addCommas(ns / 1000) + "μs";
+            } else {
+              this.nsDisplay = addCommas(ns);
+              this.alternateUnit = "";
+            }
+          } else {
+            this.nsDisplay = addCommas(Math.round(ns / 1000) * 1000);
+            this.alternateUnit = " = 1ms";
+          }
+        } else if (boxType == "ms") {
+          this.color = red;
+          this.boxes = ns * Math.pow(10, -6);
+          var ms = ns * Math.pow(10, -6);
+          if (ms &gt;= 1) {
+            this.nsDisplay = addCommas(Math.round(ns / 1000000) * 1000000);
+            this.alternateUnit = " ≈ " + addCommas(ns / 1000000) + "ms";
+          } else {
+            var us = ns / 1000;
+            if (us &gt;= 1) {
+              this.nsDisplay = addCommas(Math.round(ns / 1000) * 1000);
+              this.alternateUnit = " ≈ " + addCommas(ns / 1000) + "μs";
+            } else {
+              this.nsDisplay = addCommas(ns);
+              this.alternateUnit = "";
+            }
+          }
+        }
+
+        if (typeof optionalSuffix === "undefined") {
+          optionalSuffix = "";
+        }
+        this.displayString = (displayString + this.nsDisplay + "ns" +
+                              this.alternateUnit + " " + optionalSuffix);
+        this.div = div;
+        this.fillDiv = function() {
+          document.getElementById(this.div).innerHTML = "";
+          drawBoxes(this.boxes, this.div, this.color);
+          document.getElementById(this.div + "t").innerHTML = this.displayString;
+        }
+    }
+
+    function getMetrics() {
+        var ns = new Metric(1, "ns", "", "ns");
+        // Source for L1: http://cache.freescale.com/files/32bit/doc/app_note/AN2180.pdf
+        var L1 = new Metric(3*getCycle(), "ns", "L1 cache reference: ", "L1");
+        var branch = new Metric(10*getCycle(), "ns", "Branch mispredict: ", "branch");
+        // Source for L2: http://cache.freescale.com/files/32bit/doc/app_note/AN2180.pdf
+        var L2 = new Metric(13*getCycle(), "ns", "L2 cache reference: ", "L2");
+        var mutex = new Metric(50*getCycle(), "ns", "Mutex lock/unlock: ", "mutex");
+        var ns100 = new Metric(100, "ns", "", "ns100", ' = ' + singleBox(blue));
+        var mem = new Metric(getMemLatency(), "100ns", "Main memory reference: ", "mem");
+        var micro = new Metric(100*10, "100ns", "", "micro");
+        var zippy = new Metric(6000 * getCycle(), "100ns", "Compress 1KB wth Zippy: ",
+                               "zippy");
+        var tenMicro = new Metric(100*100, "100ns", "", "tenMicro", ' = ' + singleBox(green));
+        var network = new Metric(getNICTransmissionDelay(getNetworkPayloadBytes()), "10us",
+              "Send " + addCommas(getNetworkPayloadBytes()) + " bytes over commodity network: ", "network");
+        var ssdRandom = new Metric(getSSDLatency(), "10us", "SSD random read: ", "ssdRandom");
+        var mbMem = new Metric(getBusTransmissionDelay(getPayloadBytes()), "10us",
+                                "Read " + addCommas(getPayloadBytes()) + " bytes sequentially from memory: ", "mbMem");
+        var rtt = new Metric(getDCRTT(), "10us", "Round trip in same datacenter: ", "rtt");
+        var ms = new Metric(100*100*100, "10us", "", "ms", ' = ' + singleBox(red));
+        var mbSSD = new Metric(getSSDTransmissionDelay(getPayloadBytes()), "ms",
+                               "Read " + addCommas(getPayloadBytes()) + " bytes sequentially from SSD: ", "mbSSD");
+        var seek = new Metric(getSeek(), "ms", "Disk seek: ", "seek");
+        var mbDisk = new Metric(getDiskTransmissionDelay(getPayloadBytes()), "ms",
+                                "Read " + addCommas(getPayloadBytes()) + " bytes sequentially from disk: ", "mbDisk");
+        var wan = new Metric(getWanRTT(), "ms", "Packet roundtrip CA to Netherlands: ", "wan");
+        var metrics = new Array(ns,L1,branch,L2,mutex,ns100,mem,micro,zippy,tenMicro,network,
+                               ssdRandom,mbMem,rtt,ms,mbSSD,seek,mbDisk,wan);
+        return metrics;
+    }
+
+    &lt;!-- Slider: --&gt;
+    $(function() {
+        $( "#slider" ).slider({
+            value: year,
+            min: 1990,
+            max: 2020,
+            step: 1,
+            slide: function( event, ui ) {
+                $( "#amount" ).val( ui.value );
+                year = ui.value;
+                render();
+            }
+        });
+        $( "#amount" ).val( $( "#slider" ).slider( "value" ) );
+    });
+    &lt;/script&gt;
+
+    &lt;!-- Le styles --&gt;
+    &lt;link href="lib/bootstrap.css" rel="stylesheet"&gt;
+    &lt;style type="text/css"&gt;
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+    &lt;/style&gt;
+    &lt;link href="lib/bootstrap-responsive.css" rel="stylesheet"&gt;
+
+    &lt;!-- HTML5 shim, for IE6-8 support of HTML5 elements --&gt;
+    &lt;!--[if lt IE 9]&gt;
+      &lt;script src="http://html5shim.googlecode.com/svn/trunk/html5.js"&gt;&lt;/script&gt;
+    &lt;![endif]--&gt;
+  &lt;/head&gt;
+
+  &lt;body&gt;
+    &lt;div class="container-fluid"&gt;
+      &lt;h4&gt; Latency Numbers Every Programmer Should Know&lt;/h4&gt;
+      &lt;div class="row-fluid"&gt;
+        &lt;div class="span7 offset5"&gt;
+            &lt;input type="text" id="amount" style="border: 0; font-weight: bold;" /&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div id="slider"&gt;
+      &lt;div class="row-fluid"&gt;
+        &lt;div class="span12"&gt;&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="row-fluid"&gt;
+        &lt;div class="span3"&gt;
+          &lt;div class="row-fluid"&gt;
+              &lt;div class="span4" id="ns"&gt;&lt;/div&gt;
+              &lt;div class="span8" id="nst"&gt;&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div class="row-fluid"&gt;
+              &lt;div class="span12"&gt;&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div class="row-fluid"&gt;
+              &lt;div class="span4" id="L1"&gt;&lt;/div&gt;
+              &lt;div class="span8" id="L1t"&gt;&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div class="row-fluid"&gt;
+              &lt;div class="span12"&gt;&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div class="row-fluid"&gt;
+              &lt;div class="span4" id="branch"&gt;&lt;/div&gt;
+              &lt;div class="span8" id="brancht"&gt;&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div class="row-fluid"&gt;
+              &lt;div class="span12"&gt;&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div class="row-fluid"&gt;
+              &lt;div class="span4" id="L2"&gt;&lt;/div&gt;
+              &lt;div class="span8" id="L2t"&gt;&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div class="row-fluid"&gt;
+              &lt;div class="span12"&gt;&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div class="row-fluid"&gt;
+              &lt;div class="span4" id="mutex"&gt;&lt;/div&gt;
+              &lt;div class="span8" id="mutext"&gt;&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div class="row-fluid"&gt;
+              &lt;div class="span12"&gt;&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div class="row-fluid"&gt;
+              &lt;div class="span4" id="ns100"&gt;&lt;/div&gt;
+              &lt;div class="span8" id="ns100t"&gt;&lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;&lt;!--First Column--&gt;
+        &lt;div class="span3"&gt;
+          &lt;div class="row-fluid"&gt;
+              &lt;div class="span4" id="mem"&gt;&lt;/div&gt;
+              &lt;div class="span8" id="memt"&gt;&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div class="row-fluid"&gt;
+              &lt;div class="span12"&gt;&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div class="row-fluid"&gt;
+              &lt;div class="span4" id="micro"&gt;&lt;/div&gt;
+              &lt;div class="span8" id="microt"&gt;&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div class="row-fluid"&gt;
+              &lt;div class="span12"&gt;&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div class="row-fluid"&gt;
+              &lt;div class="span4" id="zippy"&gt;&lt;/div&gt;
+              &lt;div class="span8" id="zippyt"&gt;&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div class="row-fluid"&gt;
+              &lt;div class="span12"&gt;&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div class="row-fluid"&gt;
+              &lt;div class="span4" id="tenMicro"&gt;&lt;/div&gt;
+              &lt;div class="span8" id="tenMicrot"&gt;&lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;&lt;!--Second Column--&gt;
+        &lt;div class="span3"&gt;
+          &lt;div class="row-fluid"&gt;
+              &lt;div class="span4" id="network"&gt;&lt;/div&gt;
+              &lt;div class="span8" id="networkt"&gt;&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div class="row-fluid"&gt;
+              &lt;div class="span12"&gt;&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div class="row-fluid"&gt;
+              &lt;div class="span4" id="ssdRandom"&gt;&lt;/div&gt;
+              &lt;div class="span8" id="ssdRandomt"&gt;&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div class="row-fluid"&gt;
+              &lt;div class="span12"&gt;&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div class="row-fluid"&gt;
+              &lt;div class="span4" id="mbMem"&gt;&lt;/div&gt;
+              &lt;div class="span8" id="mbMemt"&gt;&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div class="row-fluid"&gt;
+              &lt;div class="span12"&gt;&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div class="row-fluid"&gt;
+              &lt;div class="span4" id="rtt"&gt;&lt;/div&gt;
+              &lt;div class="span8" id="rttt"&gt;&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div class="row-fluid"&gt;
+              &lt;div class="span12"&gt;&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div class="row-fluid"&gt;
+              &lt;div class="span4" id="ms"&gt;&lt;/div&gt;
+              &lt;div class="span8" id="mst"&gt;&lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;&lt;!--Third Column--&gt;
+        &lt;div class="span3"&gt;
+          &lt;div class="row-fluid"&gt;
+              &lt;div class="span4" id="mbSSD"&gt;&lt;/div&gt;
+              &lt;div class="span8" id="mbSSDt"&gt;&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div class="row-fluid"&gt;
+              &lt;div class="span12"&gt;&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div class="row-fluid"&gt;
+              &lt;div class="span4" id="seek"&gt;&lt;/div&gt;
+              &lt;div class="span8" id="seekt"&gt;&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div class="row-fluid"&gt;
+              &lt;div class="span12"&gt;&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div class="row-fluid"&gt;
+              &lt;div class="span4" id="mbDisk"&gt;&lt;/div&gt;
+              &lt;div class="span8" id="mbDiskt"&gt;&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div class="row-fluid"&gt;
+              &lt;div class="span12"&gt;&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div class="row-fluid"&gt;
+              &lt;div class="span4" id="wan"&gt;&lt;/div&gt;
+              &lt;div class="span8" id="want"&gt;&lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;&lt;!--Fourth Column--&gt;
+      &lt;/div&gt;&lt;!-- row-fluid --&gt;
+    &lt;/div&gt;&lt;!--/.fluid-container--&gt;
+
+    &lt;!-- Fill in the columns --&gt;
+    &lt;script&gt;
+        function render() {
+          var metrics = getMetrics();
+          for (var i in metrics) {
+            var metric = metrics[i];
+            metric.fillDiv();
+          }
+        }
+        render();
+    &lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</textarea><div class="CodeMirror cm-s-default"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 5px; left: 5px;"><textarea autocorrect="off" autocapitalize="off" style="position: absolute; padding: 0px; width: 1px; height: 1em; outline: none;" tabindex="0"></textarea></div><div class="CodeMirror-hscrollbar" style="left: 0px;"><div style="height: 1px;"></div></div><div class="CodeMirror-vscrollbar" style="display: block; bottom: 0px;"><div style="width: 1px; height: 7554px;"></div></div><div class="CodeMirror-scrollbar-filler"></div><div class="CodeMirror-scroll" tabindex="-1"><div style="position: relative; min-height: 100%;"><div class="CodeMirror-sizer" style="min-width: 1138.55px; margin-left: 0px; min-height: 7554px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines"><div style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre><span class="cm-meta">&lt;</span><span class="cm-meta">!</span><span class="cm-meta">D</span><span class="cm-meta">O</span><span class="cm-meta">C</span><span class="cm-meta">T</span><span class="cm-meta">Y</span><span class="cm-meta">P</span><span class="cm-meta">E</span><span class="cm-meta"> </span><span class="cm-meta">h</span><span class="cm-meta">t</span><span class="cm-meta">m</span><span class="cm-meta">l</span><span class="cm-meta">&gt;</span></pre></div><div style="position: relative; z-index: 1; display: none;"></div><div style=""><pre><span class="cm-meta">&lt;!DOCTYPE html&gt;</span></pre><pre><span class="cm-comment">&lt;!-- ************************************** EDIT ME! ************************************** --&gt;</span></pre><pre><span class="cm-comment">&lt;!-- I interactively update myself. Made possible by: https://codemirror.net/ --&gt;</span></pre><pre><span class="cm-tag">&lt;html</span> <span class="cm-attribute">lang</span>=<span class="cm-string">"en"</span><span class="cm-tag">&gt;</span></pre><pre>  <span class="cm-tag">&lt;head&gt;</span></pre><pre>    <span class="cm-tag">&lt;meta</span> <span class="cm-attribute">charset</span>=<span class="cm-string">"utf-8"</span><span class="cm-tag">&gt;</span></pre><pre>    <span class="cm-tag">&lt;meta</span> <span class="cm-attribute">name</span>=<span class="cm-string">"viewport"</span> <span class="cm-attribute">content</span>=<span class="cm-string">"width=device-width, initial-scale=1.0"</span><span class="cm-tag">&gt;</span></pre><pre>    <span class="cm-tag">&lt;script</span> <span class="cm-attribute">src</span>=<span class="cm-string">"//d3js.org/d3.v3.min.js"</span><span class="cm-tag">&gt;&lt;/script&gt;</span></pre><pre>    <span class="cm-tag">&lt;link</span> <span class="cm-attribute">rel</span>=<span class="cm-string">"stylesheet"</span> <span class="cm-attribute">href</span>=<span class="cm-string">"//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css"</span><span class="cm-tag">&gt;</span></pre><pre>    <span class="cm-tag">&lt;script</span> <span class="cm-attribute">src</span>=<span class="cm-string">"//ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"</span><span class="cm-tag">&gt;&lt;/script&gt;</span></pre><pre>    <span class="cm-tag">&lt;script</span> <span class="cm-attribute">src</span>=<span class="cm-string">"//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"</span><span class="cm-tag">&gt;&lt;/script&gt;</span></pre><pre>&nbsp;</pre><pre>    <span class="cm-tag">&lt;script&gt;</span></pre><pre>    <span class="cm-comment">// Notes:</span></pre><pre>    <span class="cm-comment">//   - All of Norvig's original numbers were from 2002</span></pre><pre>    <span class="cm-comment">//   - Any numbers without a citation are from Norvig's article:</span></pre><pre>    <span class="cm-comment">//       http://norvig.com/21-days.html#answers</span></pre><pre>    <span class="cm-comment">//   - Exponential functions have the form:</span></pre><pre>    <span class="cm-comment">//       y = a*b^x</span></pre><pre>    <span class="cm-comment">//   - raising 2^2012 causes overflow, so we index year by (year - 1982)</span></pre><pre>    <span class="cm-comment">//     (82 was the year the PC came out)</span></pre><pre>    <span class="cm-comment">// TODO: get more accurate doubling rates from Aurojit Panda's</span></pre><pre>    <span class="cm-comment">//       spreadsheet: http://www.eecs.berkeley.edu/~rcs/research/hw_trends.xlsx</span></pre><pre>&nbsp;</pre><pre>    <span class="cm-keyword">var</span> <span class="cm-variable">year</span> = <span class="cm-keyword">new</span> <span class="cm-variable">Date</span>().<span class="cm-property">getFullYear</span>();</pre><pre>    <span class="cm-keyword">function</span> <span class="cm-variable">shift</span>(<span class="cm-def">year</span>) {</pre><pre>        <span class="cm-keyword">return</span> <span class="cm-variable-2">year</span> - <span class="cm-number">1982</span>;</pre><pre>    }</pre><pre>    <span class="cm-keyword">function</span> <span class="cm-variable">getPayloadBytes</span>() {</pre><pre>        <span class="cm-comment">// 1 MB</span></pre><pre>        <span class="cm-keyword">return</span> <span class="cm-variable">Math</span>.<span class="cm-property">pow</span>(<span class="cm-number">10</span>, <span class="cm-number">6</span>);</pre></div><pre class="CodeMirror-cursor" style="left: 4px; top: 0px; height: 14px;">&nbsp;</pre><pre class="CodeMirror-cursor CodeMirror-secondarycursor" style="display: none;">&nbsp;</pre></div></div></div></div><div style="position: absolute; height: 30px; top: 7554px;">&nbsp;</div><div class="CodeMirror-gutters" style="display: none;"></div></div></div></div>
+    <script>
+      var delay;
+      // Initialize CodeMirror editor with a nice html5 canvas demo.
+      var editor = CodeMirror.fromTextArea(document.getElementById('code'), {
+        mode: 'text/html',
+        tabMode: 'indent'
+      });
+      editor.on("change", function() {
+        clearTimeout(delay);
+        delay = setTimeout(updatePreview, 300);
+      });
+      function updatePreview() {
+        var previewFrame = document.getElementById('preview');
+        var preview = previewFrame.contentDocument || previewFrame.contentWindow.document;
+        preview.open();
+        var contents = editor.getValue();
+        preview.write(contents);
+        preview.close();
+      }
+      setTimeout(updatePreview, 300);
+    </script>
+  
+
+<div class="alertify-logs bottom right"><div class="default hide"><div class="addon_everywhere_alert" style="background:url(chrome-extension://nlagochcieefibigciiakkjaopfpnbcp/assets/icons/icon_36.png) center no-repeat;"> <div class="addon_everywhere_alert_text" style="background:red;">3</div></div></div></div></body><grammarly-desktop-integration data-grammarly-shadow-root="true"></grammarly-desktop-integration></html>
