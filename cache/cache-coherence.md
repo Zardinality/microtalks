@@ -273,7 +273,7 @@ quiz: 1. what happen when 2 cpus tries to invalidate the same cache atm? talk to
 
 ![temporal_graph](./static/state-diagram.png)
 
-[demo](external\MESI-demo\VivioJS-MESI-help.html)
+[demo](./external/MESI-demo/VivioJS-MESI-help.html)
 
 --
 
