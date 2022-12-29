@@ -185,7 +185,7 @@ note: ram bus is 64 bytes, so a request has to be 64 bytes to be economic -->
 <li class="fragment">the address obviously(why?) </li>
 <li class="fragment">virtual address or real address?</li>
 </ul>
-<aside class="notes">think about machine code</aside>
+<aside class="notes">think about machine code; virtually indexed and physically tagged first level</aside>
 <!-- note:address to cache line, but not precisely, as we will see -->
 
             </section>
@@ -233,6 +233,7 @@ note: ram bus is 64 bytes, so a request has to be 64 bytes to be economic -->
 <li class="fragment">2 ways, <em>way</em> is the size of buckets.</li>
 <li class="fragment">hash function being the last but <strong>eight</strong> bits of address, the equal function is the rest of the address(except the last eight bits).</li>
 </ul>
+<aside class="notes"> what is the size of the cache in picture</aside>
 
             </section>
         
@@ -290,7 +291,7 @@ note: ram bus is 64 bytes, so a request has to be 64 bytes to be economic -->
 <li>when it exists in cache</li>
 <li>when it does not exist in cache</li>
 </ul>
-<p><a href="https://www.scss.tcd.ie/Jeremy.Jones/VivioJS/caches/cache.htm">cache structure</a></p>
+<p><a href="./external/cache-demo/VivioJS-cache-help.html">cache structure</a></p>
 <aside class="notes"> the plain scenario could be very simple. But in case of multicore processing.</aside>
 
             </section>
@@ -340,6 +341,7 @@ note: ram bus is 64 bytes, so a request has to be 64 bytes to be economic -->
 <li class="fragment">shared</li>
 <li class="fragment">invalid</li>
 </ul>
+<aside class="notes"> actually a reader-writer lock state</aside>
 
             </section>
         
@@ -379,7 +381,7 @@ quiz: 1. what happen when 2 cpus tries to invalidate the same cache atm? talk to
                 <h2>MESI protocol</h2>
 <h4>MESI state diagram</h4>
 <p><img src="./static/state-diagram.png" alt="temporal_graph"></p>
-<p><a href="https://www.scss.tcd.ie/Jeremy.Jones/VivioJS/caches/MESIHelp.htm">demo</a></p>
+<p><a href="external%5CMESI-demo%5CVivioJS-MESI-help.html">demo</a></p>
 
             </section>
         
@@ -408,7 +410,8 @@ quiz: 1. what happen when 2 cpus tries to invalidate the same cache atm? talk to
 <li class="fragment">invalidation costs because of messaging</li>
 <li class="fragment">we need to avoid it</li>
 </ul>
-<p class="fragment"><strong>Q:</strong> Do we have suspicious false sharing in our system? What about market data?</p>
+<p class="fragment"><strong>Q:</strong> Do we have suspicious cache contention in our system? What about market data?</p>
+<p class="fragment"><a href="./external/cache-contention/False-Sharing-C++-Example.html">example(by chatgpt!)</a> </p>
 
             </section>
         

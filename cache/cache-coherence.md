@@ -84,7 +84,7 @@ template<
 * the address obviously(why?)  {.fragment}
 * virtual address or real address? {.fragment}
 
-note:think about machine code
+note:think about machine code; virtually indexed and physically tagged first level
 <!-- note:address to cache line, but not precisely, as we will see -->
 
 --
@@ -128,6 +128,8 @@ template<
 * 16 sets, *set* is the number of buckets. {.fragment}
 * 2 ways, *way* is the size of buckets. {.fragment}
 * hash function being the last but **eight** bits of address, the equal function is the rest of the address(except the last eight bits). {.fragment}
+
+note: what is the size of the cache in picture
 
 
 --
@@ -188,7 +190,7 @@ offset
 * when it exists in cache
 * when it does not exist in cache
 
-[cache structure](https://www.scss.tcd.ie/Jeremy.Jones/VivioJS/caches/cache.htm)
+[cache structure](./external/cache-demo/VivioJS-cache-help.html)
 
 note: the plain scenario could be very simple. But in case of multicore processing.
 
@@ -228,6 +230,7 @@ note: the plain scenario could be very simple. But in case of multicore processi
 * shared {.fragment}
 * invalid {.fragment}
 
+note: actually a reader-writer lock state
 
 --
 
@@ -270,8 +273,7 @@ quiz: 1. what happen when 2 cpus tries to invalidate the same cache atm? talk to
 
 ![temporal_graph](./static/state-diagram.png)
 
-[demo](https://www.scss.tcd.ie/Jeremy.Jones/VivioJS/caches/MESIHelp.htm
-)
+[demo](external\MESI-demo\VivioJS-MESI-help.html)
 
 --
 
@@ -300,7 +302,9 @@ quiz: 1. what happen when 2 cpus tries to invalidate the same cache atm? talk to
 * invalidation costs because of messaging {.fragment}
 * we need to avoid it {.fragment}
 
-**Q:** Do we have suspicious false sharing in our system? What about market data? {.fragment}
+**Q:** Do we have suspicious cache contention in our system? What about market data? {.fragment}
+
+[example(by chatgpt!)](./external/cache-contention/False-Sharing-C++-Example.html)  {.fragment}
 
 --
 
